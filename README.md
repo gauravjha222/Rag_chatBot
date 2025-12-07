@@ -23,7 +23,7 @@ app.py → Streamlit web UI version
 
 * Shows the result either in the terminal or a Streamlit web page
 
-<h3>Basically, you can ask things like:<h3/>
+<h3>Basically, you can ask things like:</h3>
 
 “Tell me Amit purchase history”
 
@@ -37,17 +37,17 @@ Dataset Used (transactions.json)
 
 I used a small sample dataset:
 
-[
+<h4>[
     {"id": 1, "customer": "Amit", "product": "Laptop", "amount": 55000, "date": "2024-01-12"},
     {"id": 2, "customer": "Amit", "product": "Mouse", "amount": 700, "date": "2024-02-15"},
     {"id": 3, "customer": "Riya", "product": "Mobile", "amount": 30000, "date": "2024-01-05"},
     {"id": 4, "customer": "Riya", "product": "Earbuds", "amount": 1500, "date": "2024-02-20"},
     {"id": 5, "customer": "Karan", "product": "Keyboard", "amount": 1200, "date": "2024-03-01"}
-]
+]</h4>
 
 Requirements
 
-<h3>To run the project, I installed these:<h3/>
+<h3>To run the project, I installed these:</h3>
 
 pip install sentence-transformers
 pip install numpy
