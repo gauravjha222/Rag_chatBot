@@ -74,7 +74,7 @@ How the Project Works (Short Explanation)
 
 * Show the final answer
 
-# This is basically the RAG workflow but in a simple way.
+<h3>This is basically the RAG workflow but in a simple way.</h3>
 
 Running the Terminal Version
 python main.py
