@@ -56,25 +56,25 @@ pip install streamlit
 
 How the Project Works (Short Explanation)
 
-Load the JSON dataset
+* Load the JSON dataset
 
-Create meaningful text for each transaction
+* Create meaningful text for each transaction
 
-Generate embeddings for all transactions
+* Generate embeddings for all transactions
 
-Take the user’s question
+* Take the user’s question
 
-Convert the question into an embedding
+* Convert the question into an embedding
 
-Compare the question embedding with transaction embeddings
+* Compare the question embedding with transaction embeddings
 
-Retrieve the most similar ones
+* Retrieve the most similar ones
 
-Filter by customer name if the question mentions it
+* Filter by customer name if the question mentions it
 
-Show the final answer
+* Show the final answer
 
-This is basically the RAG workflow but in a simple way.
+# This is basically the RAG workflow but in a simple way.
 
 Running the Terminal Version
 python main.py
