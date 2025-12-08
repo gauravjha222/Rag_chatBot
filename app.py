@@ -29,7 +29,7 @@ def load_model_and_embeddings(texts):
 
 # 3. RAG Retriever with Customer Filtering
 
-def retrieve(query, model, embeddings, texts, data, top_k=5):
+def retrieve(query, model, embeddings, texts, data, top_k=3):
 
     # Step 1: similarity search 
     query_embed = model.encode([query])
