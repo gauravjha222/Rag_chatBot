@@ -1,81 +1,100 @@
 import streamlit as st
 import json
+import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from openai import OpenAI
 
+# Initialize OpenAI client
+client = OpenAI()
 
-# 1. Load Data
+# 1. Load + Preprocess Data
+
 @st.cache_resource
-def load_data():
-    with open("transactions.json", "r") as f:
-        data = json.load(f)
+def load_transactions(file_path="transactions.json"):
+    with open(file_path, "r") as file:
+        data = json.load(file)
 
+    # Convert each transaction into text
     texts = [
-        f"On {t['date']}, {t['customer']} purchased a {t['product']} for ₹{t['amount']}."
+        f"Transaction ID {t['id']}: On {t['date']}, {t['customer']} purchased a {t['product']} for ₹{t['amount']}."
         for t in data
     ]
+
     return data, texts
 
 
-# 2. Embeddings
+# 2. Create Embeddings
 
 @st.cache_resource
-def load_model_and_embeddings(texts):
+def create_embeddings(texts):
     model = SentenceTransformer("all-MiniLM-L6-v2")
     embeddings = model.encode(texts)
     return model, embeddings
 
 
+# 3. Retriever
 
-# 3. RAG Retriever with Customer Filtering
 
-def retrieve(query, model, embeddings, texts, data, top_k=5):
+def retrieve_transactions(query, model, embeddings, texts, top_k=3):
+    query_embedding = model.encode([query])
+    similarities = cosine_similarity(query_embedding, embeddings)[0]
 
-    # Step 1: similarity search 
-    query_embed = model.encode([query])
-    sims = cosine_similarity(query_embed, embeddings)[0]
-    top_idx = sims.argsort()[-top_k:][::-1]
+    # top-k most similar
+    top_indices = similarities.argsort()[::-1][:top_k]
+    retrieved = [texts[i] for i in top_indices]
 
-    retrieved = [(texts[i], data[i]) for i in top_idx]
+    return retrieved
 
-    # Step 2: detect customer name from query 
-    customers = ["Amit", "Riya", "Karan"]
-    name_in_query = None
-    for c in customers:
-        if c.lower() in query.lower():
-            name_in_query = c
 
-    # Step 3: filter retrieved results by customer name 
-    if name_in_query:
-        retrieved = [t for t in retrieved if t[1]["customer"] == name_in_query]
+# 4. LLM-Based Answer Generator (Real RAG)
 
-    # return only the text strings
-    return [t[0] for t in retrieved]
+def generate_answer(question, context_list):
+    context = "\n".join(context_list)
 
-# 4. Streamlit UI
+    prompt = f"""
+You are a strict RAG chatbot.
+Answer the user's question using ONLY this context.
+If answer is not found in the context, say:
+"Information not available in the provided transactions."
 
-st.title("RAG Chatbot for Transactions")
+Context:
+{context}
+
+Question:
+{question}
+
+If needed, calculate totals, counts or averages only from this context.
+Give a clear, helpful answer.
+"""
+
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    return completion.choices[0].message["content"]
+
+
+# Streamlit UI
+
+st.title(" RAG Chatbot for Transactions")
 st.write("Ask any question about customer purchases based on the dataset!")
 
-data, texts = load_data()
-model, embeddings = load_model_and_embeddings(texts)
+# Load data + embeddings
+data, texts = load_transactions()
+model, embeddings = create_embeddings(texts)
 
+# User input
 query = st.text_input("Enter your question:")
 
 if query:
-    results = retrieve(query, model, embeddings, texts, data)
+    retrieved = retrieve_transactions(query, model, embeddings, texts)
+    answer = generate_answer(query, retrieved)
 
-    st.subheader("Retrieved Transactions")
-    if len(results) == 0:
-        st.write("No matching transactions found.")
-    else:
-        for r in results:
-            st.write(f"- {r}")
+    st.subheader("Retrieved Context")
+    for r in retrieved:
+        st.write("- ", r)
 
     st.subheader("Chatbot Answer")
-    if len(results) > 0:
-        st.write("Here are the relevant transactions found:")
-        for r in results:
-            st.write(f"{r}")
-    else:
-        st.write("Sorry, I couldn't find any relevant transactions.")
+    st.write(answer)
