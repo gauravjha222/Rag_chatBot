@@ -44,6 +44,6 @@ pip install openai
 
 ## To Run :-
 
-streamlit run app.py
+streamlit run app.py ,
 python main.py (terminal version)
 
