@@ -1,86 +1,49 @@
-<h1>RAG Transaction Chatbot</h1>
+# RAG Transaction Chatbot
 
-This project is a simple RAG (Retrieval Augmented Generation) based chatbot that can answer questions about customer transactions.
-I built it using Python, SentenceTransformers, and Streamlit.
+This project is a **RAG (Retrieval Augmented Generation)** based chatbot that can answer questions about customer transactions. The system uses a combination of **Sentence Transformers**, **OpenAI's GPT models** (for LLM generation), and **Streamlit** for the web interface.
 
-The chatbot can run in two ways:
+The chatbot works in two modes:
 
-main.py → terminal/console version
+ **main.py** → Terminal/Console-based version
+ **app.py** → Streamlit Web UI version
 
-app.py → Streamlit web UI version
 
-<h2>What This Project Does</h2>
 
-* Loads transaction data from a JSON file
+## What This Project Does
 
-* Converts each transaction into a readable sentence
+ **Loads transaction data** from a JSON file
+ **Converts each transaction** into a readable sentence
+ **Creates embeddings** using a pretrained SentenceTransformer model
+ **Searches for the most relevant transactions** based on cosine similarity
+ **Filters answers based on customer** (Amit, Riya, Karan)
+ **Generates detailed responses** using **OpenAI's GPT models** (via RAG - Retrieval Augmented Generation pipeline)
+ **Shows the results** either in the terminal or through a Streamlit web page
 
-* Creates embeddings using a pretrained model
 
-* Searches for the most relevant transactions using cosine similarity
+## Features
 
-* Filters answers based on the customer (Amit, Riya, Karan)
+### With this chatbot, you can ask things like:
 
-* Shows the result either in the terminal or a Streamlit web page
+ **"Tell me Amit’s purchase history"**
+ **"Show Riya’s transactions"**
+ **"What did Karan buy?"**
 
-<h3>Basically, you can ask things like:</h3>
+The chatbot will retrieve the most relevant transactions and generate human like answers.
 
-“Tell me Amit purchase history”
+## Dataset Used (transactions.json)
 
-“Show Riya’s transactions”
+We use a small sample dataset to test the chatbot's functionality. 
 
-“What did Karan buy?”
-
-And the chatbot will return the matching transactions.
-
-Dataset Used (transactions.json)
-
-I used a small sample dataset:
-
-<h4>[
-    {"id": 1, "customer": "Amit", "product": "Laptop", "amount": 55000, "date": "2024-01-12"},
-    {"id": 2, "customer": "Amit", "product": "Mouse", "amount": 700, "date": "2024-02-15"},
-    {"id": 3, "customer": "Riya", "product": "Mobile", "amount": 30000, "date": "2024-01-05"},
-    {"id": 4, "customer": "Riya", "product": "Earbuds", "amount": 1500, "date": "2024-02-20"},
-    {"id": 5, "customer": "Karan", "product": "Keyboard", "amount": 1200, "date": "2024-03-01"}
-]</h4>
-
-Requirements
-
-<h3>To run the project, I installed these:</h3>
+## Requirements
 
 pip install sentence-transformers
 pip install numpy
 pip install scikit-learn
 pip install streamlit
+pip install openai
 
-How the Project Works (Short Explanation)
+## To Run :-
 
-* Load the JSON dataset
-
-* Create meaningful text for each transaction
-
-* Generate embeddings for all transactions
-
-* Take the user’s question
-
-* Convert the question into an embedding
-
-* Compare the question embedding with transaction embeddings
-
-* Retrieve the most similar ones
-
-* Filter by customer name if the question mentions it
-
-* Show the final answer
-
-<h3>This is basically the RAG workflow but in a simple way.</h3>
-
-Running the Terminal Version
-python main.py
-
-
-The terminal will ask for your question and show the results there.
-
-Running the Streamlit App
 streamlit run app.py
+python main.py (terminal version)
+
